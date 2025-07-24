@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Château Culinaire - Recipe Collection</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap');
+        
+    </style>
+</head>
+<body>
+    <!-- Navigation Menu -->
+    <nav class="main-nav" id="mainNav">
+        <div class="nav-header">
+            <div class="nav-logo">Château Culinaire</div>
+            <div class="nav-subtitle">Fine Recipe Collection</div>
+        </div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item" onclick="showPage('home')">
+                <i class="fas fa-home"></i>Home
+            </a>
+            <a href="#" class="nav-item" onclick="showRecipeList('main')">
+                <i class="fas fa-utensils"></i>Main Courses
+            </a>
+            <a href="#" class="nav-item" onclick="showRecipeList('drink')">
+                <i class="fas fa-wine-glass"></i>Beverages
+            </a>
+            <a href="#" class="nav-item" onclick="showRecipeList('dessert')">
+                <i class="fas fa-birthday-cake"></i>Desserts
+            </a>
+        </div>
+    </nav>
+
+    <!-- Menu Toggle Button -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Navigation Overlay -->
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <!-- Back Button -->
+    <button class="back-button" id="backButton" style="display: none;">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <!-- Home Page -->
+    <div class="page home-page active" id="homePage">
+        <div class="home-logo">Château Culinaire</div>
+        <div class="home-tagline">Exquisite Recipes for the Discerning Palate</div>
+        
+        <div class="home-categories">
+            <a href="#" class="category-card" onclick="showRecipeList('main')">
+                <div class="category-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="category-title">Main Courses</div>
+                <div class="category-description">Sophisticated entrees and signature dishes crafted with the finest ingredients</div>
+            </a>
+            
+            <a href="#" class="category-card" onclick="showRecipeList('drink')">
+                <div class="category-icon">
+                    <i class="fas fa-wine-glass"></i>
+                </div>
+                <div class="category-title">Beverages</div>
+                <div class="category-description">Artisanal cocktails, fine wines, and specialty beverages to complement your meal</div>
+            </a>
+            
+            <a href="#" class="category-card" onclick="showRecipeList('dessert')">
+                <div class="category-icon">
+                    <i class="fas fa-birthday-cake"></i>
+                </div>
+                <div class="category-title">Desserts</div>
+                <div class="category-description">Decadent sweets and pastries to conclude your dining experience</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recipe List Page -->
+    <div class="page" id="recipeListPage">
+        <div class="page-header">
+            <h1 class="page-title" id="listPageTitle">Recipe Collection</h1>
+            <p class="page-subtitle" id="listPageSubtitle">Discover our curated selection</p>
+        </div>
+        <div class="recipe-list" id="recipeList">
+            <!-- Recipes will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Recipe Detail Page -->
+    <div class="page" id="recipeDetailPage">
+        <div class="recipe-detail" id="recipeDetail">
+            <!-- Recipe details will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let currentPage = 'home';
+        let currentCategory = '';
+        let pageHistory = [];
+
+        // Navigation functionality
+        const mainNav = document.getElementById('mainNav');
+        const menuToggle = document.getElementById('menuToggle');
+        const navOverlay = document.getElementById('navOverlay');
+        const backButton = document.getElementById('backButton');
+
+        // Menu toggle
+        menuToggle.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+        });
+
+        // Close menu when clicking overlay
+        navOverlay.addEventListener('click', () => {
+            mainNav.classList.remove('active');
+            navOverlay.classList.remove('active');
+        });
+
+        // Back button
+        backButton.addEventListener('click', () => {
+            if (pageHistory.length > 0) {
+                const previousPage = pageHistory.pop();
+                if (previousPage.type === 'home') {
+                    showPage('home');
+                } else if (previousPage.type === 'list') {
+                    showRecipeList(previousPage.category);
+                }
+            }
+        });
+
+        // Page navigation
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            document.getElementById(pageName + 'Page').classList.add('active');
+            currentPage = pageName;
+            
+            // Close navigation
+            mainNav.classList.remove('active');
+            navOverlay.classList.remove('active');
+            
+            // Show/hide back button
+            backButton.style.display = pageName === 'home' ? 'none' : 'block';
+        }
+
+        function showRecipeList(category) {
+            pageHistory.push({ type: currentPage, category: currentCategory });
+            currentCategory = category;
+            
+            // Update page title based on category
+            const titles = {
+                'main': { title: 'Main Courses', subtitle: 'Signature dishes and gourmet entrees' },
+                'drink': { title: 'Beverages', subtitle: 'Artisanal cocktails and fine selections' },
+                'dessert': { title: 'Desserts', subtitle: 'Decadent sweets and pastries' }
+            };
+            
+            document.getElementById('listPageTitle').textContent = titles[category].title;
+            document.getElementById('listPageSubtitle').textContent = titles[category].subtitle;
+            
+            showPage('recipeList');
+            loadRecipeList(category);
+        }
+
+        function showRecipeDetail(recipeId) {
+            pageHistory.push({ type: 'list', category: currentCategory });
+            showPage('recipeDetail');
+            loadRecipeDetail(recipeId);
+        }
+
+        // API functions with fallback data
+        function loadRecipeList(category) {
+            const recipeList = document.getElementById('recipeList');
+            recipeList.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><br>Loading recipes...</div>';
+            
+            const rootPath = "https://mysite.itvarsity.org/api/recipe-book/";
+            const fullPath = rootPath + "get-recipes/?category=" + category;
+
+            fetch(fullPath)
+                .then(response => response.json())
+                .then(data => {
+                    displayRecipeList(data);
+                })
+                .catch(error => {
+                    console.error('Error loading recipes:', error);
+                    // Fallback data for demonstration
+                    const fallbackData = getFallbackRecipes(category);
+                    displayRecipeList(fallbackData);
+                });
+        }
+
+        function displayRecipeList(recipes) {
+            const recipeList = document.getElementById('recipeList');
+            let output = '';
+            
+            recipes.forEach(recipe => {
+                output += `
+                    <a href="#" class="recipe-card" onclick="showRecipeDetail(${recipe.id})">
+                        <div class="recipe-image"></div>
+                        <div class="recipe-content">
+                            <h3 class="recipe-title">${recipe.title}</h3>
+                            <p class="recipe-description">${recipe.description}</p>
+                        </div>
+                    </a>
+                `;
+            });
+            
+            recipeList.innerHTML = output;
+        }
+
+        function loadRecipeDetail(recipeId) {
+            const recipeDetail = document.getElementById('recipeDetail');
+            recipeDetail.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><br>Loading recipe...</div>';
+            
+            const rootPath = "https://mysite.itvarsity.org/api/recipe-book/";
+            const fullPath = rootPath + "get-recipes/?id=" + recipeId;
+
+            fetch(fullPath)
+                .then(response => response.json())
+                .then(data => {
+                    displayRecipeDetail(data[0]);
+                })
+                .catch(error => {
+                    console.error('Error loading recipe:', error);
+                    // Fallback data for demonstration
+                    const fallbackRecipe = getFallbackRecipeDetail(recipeId);
+                    displayRecipeDetail(fallbackRecipe);
+                });
+        }
+
+        function displayRecipeDetail(recipe) {
+            const recipeDetail = document.getElementById('recipeDetail');
+            
+            const output = `
+                <div class="recipe-hero"></div>
+                <div class="recipe-detail-content">
+                    <h1 class="recipe-detail-title">${recipe.title}</h1>
+                    
+                    <div class="recipe-section">
+                        <h3>Ingredients</h3>
+                        <ul class="ingredients-list">
+                            ${recipe.ingredients}
+                        </ul>
+                    </div>
+                    
+                    <div class="recipe-section">
+                        <h3>Method</h3>
+                        <ol class="method-list">
+                            ${recipe.method}
+                        </ol>
+                    </div>
+                </div>
+            `;
+            
+            recipeDetail.innerHTML = output;
+        }
+
+        // Fallback data for demonstration
+        function getFallbackRecipes(category) {
+            const recipes = {
+                main: [
+                    { id: 1, title: "Beef Wellington", description: "Classic beef tenderloin wrapped in puff pastry with mushroom duxelles" },
+                    { id: 2, title: "Lobster Thermidor", description: "Succulent lobster in a rich, creamy sauce with a golden cheese crust" },
+                    { id: 3, title: "Duck Confit", description: "Slow-cooked duck leg in its own fat, served with garlic and herbs" }
+                ],
+                drink: [
+                    { id: 4, title: "Classic Martini", description: "Premium gin or vodka, dry vermouth, garnished with olive or lemon twist" },
+                    { id: 5, title: "Château Margaux 2010", description: "Exceptional Bordeaux wine with notes of blackcurrant and cedar" },
+                    { id: 6, title: "Champagne Cocktail", description: "Traditional champagne cocktail with sugar cube and Angostura bitters" }
+                ],
+                dessert: [
+                    { id: 7, title: "Crème Brûlée", description: "Rich vanilla custard topped with caramelized sugar" },
+                    { id: 8, title: "Chocolate Soufflé", description: "Light and airy chocolate dessert, served warm with vanilla ice cream" },
+                    { id: 9, title: "Tarte Tatin", description: "Upside-down apple tart with caramelized apples and buttery pastry" }
+                ]
+            };
+            return recipes[category] || [];
+        }
+
+        function getFallbackRecipeDetail(id) {
+            const recipes = {
+                1: { 
+                    title: "Beef Wellington", 
+                    ingredients: "<li>2 lbs beef tenderloin</li><li>1 lb puff pastry</li><li>8 oz mushrooms</li><li>2 shallots</li><li>Fresh thyme</li>",
+                    method: "<li>Sear the beef tenderloin</li><li>Prepare mushroom duxelles</li><li>Wrap beef in pastry</li><li>Bake until golden</li>"
+                },
+                2: { 
+                    title: "Lobster Thermidor", 
+                    ingredients: "<li>2 lobsters</li><li>Heavy cream</li><li>Gruyère cheese</li><li>White wine</li><li>Mustard</li>",
+                    method: "<li>Cook lobsters</li><li>Remove meat from shells</li><li>Prepare cream sauce</li><li>Broil until golden</li>"
+                }
+            };
+            return recipes[id] || { title: "Recipe Not Found", ingredients: "<li>No ingredients available</li>", method: "<li>No method available</li>" };
+        }
+
+        // Initialize the application
+        window.addEventListener('load', () => {
+            showPage('home');
+        });
+    </script>
+</body>
+</html>

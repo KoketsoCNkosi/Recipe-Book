@@ -1,0 +1,422 @@
+        :root {
+            --primary-gold: #D4AF37;
+            --deep-burgundy: #722F37;
+            --charcoal: #2C2C2C;
+            --cream: #FDF6E3;
+            --soft-white: #FEFEFE;
+            --accent-copper: #B87333;
+            --muted-sage: #9CAF88;
+            --shadow: rgba(0, 0, 0, 0.15);
+            --gold-gradient: linear-gradient(135deg, #D4AF37, #F4E4BC);
+            --burgundy-gradient: linear-gradient(135deg, #722F37, #8B4C57);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Source Sans Pro', sans-serif;
+            color: var(--charcoal);
+            overflow-x: hidden;
+        }
+
+        /* Navigation Menu */
+        .main-nav {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background: var(--burgundy-gradient);
+            z-index: 1000;
+            transition: left 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            box-shadow: 2px 0 20px var(--shadow);
+        }
+
+        .main-nav.active {
+            left: 0;
+        }
+
+        .nav-header {
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-subtitle {
+            color: var(--cream);
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+
+        .nav-menu {
+            padding: 2rem 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 1rem 2rem;
+            color: var(--cream);
+            text-decoration: none;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--primary-gold);
+            color: var(--primary-gold);
+        }
+
+        .nav-item i {
+            width: 20px;
+            margin-right: 1rem;
+        }
+
+        /* Menu Toggle */
+        .menu-toggle {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            z-index: 1001;
+            background: var(--gold-gradient);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            color: var(--deep-burgundy);
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Overlay */
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .nav-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Page Styles */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding: 2rem;
+            padding-left: 5rem;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--deep-burgundy);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--gold-gradient);
+        }
+
+        .page-subtitle {
+            color: var(--accent-copper);
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        /* Home Page */
+        .home-page {
+            background: linear-gradient(135deg, var(--cream) 0%, #F5F0E8 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .home-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--deep-burgundy);
+            margin-bottom: 1rem;
+        }
+
+        .home-tagline {
+            font-size: 1.3rem;
+            color: var(--accent-copper);
+            margin-bottom: 3rem;
+            font-style: italic;
+        }
+
+        .home-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+        }
+
+        .category-card {
+            background: var(--soft-white);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px var(--shadow);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary-gold);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .category-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--deep-burgundy);
+            margin-bottom: 0.5rem;
+        }
+
+        .category-description {
+            color: var(--charcoal);
+            line-height: 1.6;
+        }
+
+        /* Recipe List Page */
+        .recipe-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .recipe-card {
+            background: var(--soft-white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px var(--shadow);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s ease;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .recipe-image {
+            height: 200px;
+            background: var(--gold-gradient);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recipe-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, var(--primary-gold), var(--accent-copper));
+            opacity: 0.8;
+        }
+
+        .recipe-content {
+            padding: 1.5rem;
+        }
+
+        .recipe-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--deep-burgundy);
+            margin-bottom: 0.5rem;
+        }
+
+        .recipe-description {
+            color: var(--charcoal);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Recipe Detail Page */
+        .recipe-detail {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--soft-white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .recipe-hero {
+            height: 300px;
+            background: var(--gold-gradient);
+            position: relative;
+        }
+
+        .recipe-detail-content {
+            padding: 2rem;
+        }
+
+        .recipe-detail-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--deep-burgundy);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .recipe-section {
+            margin-bottom: 2rem;
+        }
+
+        .recipe-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--deep-burgundy);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-gold);
+        }
+
+        .ingredients-list, .method-list {
+            padding-left: 1.5rem;
+        }
+
+        .ingredients-list li {
+            margin-bottom: 0.5rem;
+            color: var(--charcoal);
+        }
+
+        .method-list li {
+            margin-bottom: 1rem;
+            color: var(--charcoal);
+            line-height: 1.6;
+        }
+
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--burgundy-gradient);
+            color: var(--cream);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page {
+                padding: 1rem;
+                padding-left: 1rem;
+            }
+
+            .home-logo {
+                font-size: 2.5rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .home-categories {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .recipe-list {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--accent-copper);
+        }
+
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
