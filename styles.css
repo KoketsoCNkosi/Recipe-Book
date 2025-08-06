@@ -1,3 +1,5 @@
+ @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap');
+        
         :root {
             --primary-gold: #D4AF37;
             --deep-burgundy: #722F37;
@@ -28,8 +30,8 @@
         .main-nav {
             position: fixed;
             top: 0;
-            left: -300px;
-            width: 300px;
+            left: -320px;
+            width: 320px;
             height: 100vh;
             background: var(--burgundy-gradient);
             z-index: 1000;
@@ -42,14 +44,14 @@
         }
 
         .nav-header {
-            padding: 2rem;
+            padding: 2.5rem 2rem;
             text-align: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .nav-logo {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: var(--primary-gold);
             margin-bottom: 0.5rem;
@@ -66,7 +68,8 @@
         }
 
         .nav-item {
-            display: block;
+            display: flex;
+            align-items: center;
             padding: 1rem 2rem;
             color: var(--cream);
             text-decoration: none;
@@ -84,6 +87,7 @@
         .nav-item i {
             width: 20px;
             margin-right: 1rem;
+            text-align: center;
         }
 
         /* Menu Toggle */
@@ -102,10 +106,13 @@
             cursor: pointer;
             box-shadow: 0 4px 15px var(--shadow);
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .menu-toggle:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         /* Overlay */
@@ -127,12 +134,36 @@
             visibility: visible;
         }
 
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--burgundy-gradient);
+            color: var(--cream);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-button:hover {
+            transform: scale(1.05);
+        }
+
         /* Page Styles */
         .page {
             display: none;
             min-height: 100vh;
-            padding: 2rem;
-            padding-left: 5rem;
+            width: 100%;
         }
 
         .page.active {
@@ -142,12 +173,12 @@
         .page-header {
             text-align: center;
             margin-bottom: 3rem;
-            padding-top: 2rem;
+            padding: 2rem 1rem 0;
         }
 
         .page-title {
             font-family: 'Playfair Display', serif;
-            font-size: 3rem;
+            font-size: clamp(2rem, 5vw, 3rem);
             font-weight: 700;
             color: var(--deep-burgundy);
             margin-bottom: 1rem;
@@ -168,7 +199,7 @@
         .page-subtitle {
             color: var(--accent-copper);
             font-style: italic;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
         }
 
         /* Home Page */
@@ -179,44 +210,54 @@
             justify-content: center;
             align-items: center;
             text-align: center;
+            padding: 2rem;
         }
 
         .home-logo {
             font-family: 'Playfair Display', serif;
-            font-size: 4rem;
+            font-size: clamp(2.5rem, 8vw, 4rem);
             font-weight: 700;
             color: var(--deep-burgundy);
             margin-bottom: 1rem;
         }
 
         .home-tagline {
-            font-size: 1.3rem;
+            font-size: clamp(1rem, 3vw, 1.3rem);
             color: var(--accent-copper);
             margin-bottom: 3rem;
             font-style: italic;
+            max-width: 600px;
         }
 
         .home-categories {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            max-width: 900px;
+            max-width: 1100px;
+            width: 100%;
+            padding: 0 1rem;
         }
 
         .category-card {
             background: var(--soft-white);
-            padding: 2.5rem;
+            padding: 2.5rem 2rem;
             border-radius: 15px;
             box-shadow: 0 8px 30px var(--shadow);
             text-decoration: none;
             color: inherit;
             transition: all 0.4s ease;
             border: 2px solid transparent;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .category-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
             border-color: var(--primary-gold);
         }
 
@@ -237,15 +278,21 @@
         .category-description {
             color: var(--charcoal);
             line-height: 1.6;
+            font-size: 0.95rem;
         }
 
         /* Recipe List Page */
+        .recipe-list-container {
+            padding: 0 2rem 2rem;
+        }
+
         .recipe-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
+            width: 100%;
         }
 
         .recipe-card {
@@ -256,6 +303,9 @@
             text-decoration: none;
             color: inherit;
             transition: all 0.4s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         .recipe-card:hover {
@@ -268,6 +318,7 @@
             background: var(--gold-gradient);
             position: relative;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         .recipe-image::before {
@@ -283,6 +334,9 @@
 
         .recipe-content {
             padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .recipe-title {
@@ -297,9 +351,14 @@
             color: var(--charcoal);
             font-size: 0.95rem;
             line-height: 1.5;
+            flex-grow: 1;
         }
 
         /* Recipe Detail Page */
+        .recipe-detail-container {
+            padding: 0 2rem 2rem;
+        }
+
         .recipe-detail {
             max-width: 800px;
             margin: 0 auto;
@@ -321,7 +380,7 @@
 
         .recipe-detail-title {
             font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
             font-weight: 700;
             color: var(--deep-burgundy);
             text-align: center;
@@ -356,67 +415,112 @@
             line-height: 1.6;
         }
 
-        /* Back Button */
-        .back-button {
-            position: fixed;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: var(--burgundy-gradient);
-            color: var(--cream);
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px var(--shadow);
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-
-        .back-button:hover {
-            transform: scale(1.1);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .page {
-                padding: 1rem;
-                padding-left: 1rem;
-            }
-
-            .home-logo {
-                font-size: 2.5rem;
-            }
-
-            .page-title {
-                font-size: 2rem;
-            }
-
-            .home-categories {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .recipe-list {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-        }
-
         /* Loading Animation */
         .loading {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 2rem;
             color: var(--accent-copper);
         }
 
         .loading i {
             font-size: 2rem;
             animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .menu-toggle, .back-button {
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+
+            .home-page {
+                padding: 1.5rem;
+            }
+
+            .home-categories {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 0;
+                max-width: 400px;
+            }
+
+            .category-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .recipe-list-container,
+            .recipe-detail-container {
+                padding: 0 1rem 2rem;
+            }
+
+            .recipe-list {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .recipe-detail-content {
+                padding: 1.5rem;
+            }
+
+            .page-header {
+                margin-bottom: 2rem;
+            }
+
+            .nav-header {
+                padding: 2rem 1.5rem;
+            }
+
+            .main-nav {
+                width: 280px;
+                left: -280px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-toggle, .back-button {
+                top: 1rem;
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .menu-toggle {
+                left: 1rem;
+            }
+
+            .back-button {
+                right: 1rem;
+            }
+
+            .home-page {
+                padding: 1rem;
+            }
+
+            .home-tagline {
+                margin-bottom: 2rem;
+            }
+
+            .category-card {
+                padding: 1.5rem;
+            }
+
+            .category-icon {
+                font-size: 2.5rem;
+            }
+
+            .recipe-detail-content {
+                padding: 1rem;
+            }
+
+            .recipe-hero {
+                height: 200px;
+            }
         }
