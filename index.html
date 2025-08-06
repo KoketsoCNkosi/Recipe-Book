@@ -6,13 +6,8 @@
     <title>Château Culinaire - Recipe Collection</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap');
-        
-    </style>
 </head>
 <body>
-    <!-- Navigation Menu -->
     <nav class="main-nav" id="mainNav">
         <div class="nav-header">
             <div class="nav-logo">Château Culinaire</div>
@@ -34,20 +29,16 @@
         </div>
     </nav>
 
-    <!-- Menu Toggle Button -->
     <button class="menu-toggle" id="menuToggle">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Navigation Overlay -->
     <div class="nav-overlay" id="navOverlay"></div>
 
-    <!-- Back Button -->
     <button class="back-button" id="backButton" style="display: none;">
         <i class="fas fa-arrow-left"></i>
     </button>
-
-    <!-- Home Page -->
+    
     <div class="page home-page active" id="homePage">
         <div class="home-logo">Château Culinaire</div>
         <div class="home-tagline">Exquisite Recipes for the Discerning Palate</div>
@@ -79,21 +70,21 @@
         </div>
     </div>
 
-    <!-- Recipe List Page -->
     <div class="page" id="recipeListPage">
         <div class="page-header">
             <h1 class="page-title" id="listPageTitle">Recipe Collection</h1>
             <p class="page-subtitle" id="listPageSubtitle">Discover our curated selection</p>
         </div>
-        <div class="recipe-list" id="recipeList">
-            <!-- Recipes will be loaded here -->
+        <div class="recipe-list-container">
+            <div class="recipe-list" id="recipeList">
+            </div>
         </div>
     </div>
 
-    <!-- Recipe Detail Page -->
     <div class="page" id="recipeDetailPage">
-        <div class="recipe-detail" id="recipeDetail">
-            <!-- Recipe details will be loaded here -->
+        <div class="recipe-detail-container">
+            <div class="recipe-detail" id="recipeDetail">
+            </div>
         </div>
     </div>
 
@@ -110,7 +101,8 @@
         const backButton = document.getElementById('backButton');
 
         // Menu toggle
-        menuToggle.addEventListener('click', () => {
+        menuToggle.addEventListener('click', (e) => {
+            e.preventDefault();
             mainNav.classList.toggle('active');
             navOverlay.classList.toggle('active');
         });
@@ -122,7 +114,8 @@
         });
 
         // Back button
-        backButton.addEventListener('click', () => {
+        backButton.addEventListener('click', (e) => {
+            e.preventDefault();
             if (pageHistory.length > 0) {
                 const previousPage = pageHistory.pop();
                 if (previousPage.type === 'home') {
@@ -139,7 +132,11 @@
                 page.classList.remove('active');
             });
             
-            document.getElementById(pageName + 'Page').classList.add('active');
+            const targetPage = document.getElementById(pageName + 'Page');
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+            
             currentPage = pageName;
             
             // Close navigation
@@ -151,7 +148,9 @@
         }
 
         function showRecipeList(category) {
-            pageHistory.push({ type: currentPage, category: currentCategory });
+            if (currentPage !== 'list' || currentCategory !== category) {
+                pageHistory.push({ type: currentPage, category: currentCategory });
+            }
             currentCategory = category;
             
             // Update page title based on category
@@ -161,8 +160,9 @@
                 'dessert': { title: 'Desserts', subtitle: 'Decadent sweets and pastries' }
             };
             
-            document.getElementById('listPageTitle').textContent = titles[category].title;
-            document.getElementById('listPageSubtitle').textContent = titles[category].subtitle;
+            const categoryInfo = titles[category] || { title: 'Recipes', subtitle: 'Our collection' };
+            document.getElementById('listPageTitle').textContent = categoryInfo.title;
+            document.getElementById('listPageSubtitle').textContent = categoryInfo.subtitle;
             
             showPage('recipeList');
             loadRecipeList(category);
@@ -177,13 +177,16 @@
         // API functions with fallback data
         function loadRecipeList(category) {
             const recipeList = document.getElementById('recipeList');
-            recipeList.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><br>Loading recipes...</div>';
+            recipeList.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><div>Loading recipes...</div></div>';
             
             const rootPath = "https://mysite.itvarsity.org/api/recipe-book/";
             const fullPath = rootPath + "get-recipes/?category=" + category;
 
             fetch(fullPath)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
                 .then(data => {
                     displayRecipeList(data);
                 })
@@ -197,15 +200,20 @@
 
         function displayRecipeList(recipes) {
             const recipeList = document.getElementById('recipeList');
-            let output = '';
             
+            if (!recipes || recipes.length === 0) {
+                recipeList.innerHTML = '<div class="loading">No recipes found in this category.</div>';
+                return;
+            }
+            
+            let output = '';
             recipes.forEach(recipe => {
                 output += `
-                    <a href="#" class="recipe-card" onclick="showRecipeDetail(${recipe.id})">
+                    <a href="#" class="recipe-card" onclick="showRecipeDetail(${recipe.id}); return false;">
                         <div class="recipe-image"></div>
                         <div class="recipe-content">
-                            <h3 class="recipe-title">${recipe.title}</h3>
-                            <p class="recipe-description">${recipe.description}</p>
+                            <h3 class="recipe-title">${recipe.title || 'Untitled Recipe'}</h3>
+                            <p class="recipe-description">${recipe.description || 'No description available'}</p>
                         </div>
                     </a>
                 `;
@@ -216,15 +224,22 @@
 
         function loadRecipeDetail(recipeId) {
             const recipeDetail = document.getElementById('recipeDetail');
-            recipeDetail.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><br>Loading recipe...</div>';
+            recipeDetail.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><div>Loading recipe...</div></div>';
             
             const rootPath = "https://mysite.itvarsity.org/api/recipe-book/";
             const fullPath = rootPath + "get-recipes/?id=" + recipeId;
 
             fetch(fullPath)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
                 .then(data => {
-                    displayRecipeDetail(data[0]);
+                    if (data && data.length > 0) {
+                        displayRecipeDetail(data[0]);
+                    } else {
+                        throw new Error('No recipe data received');
+                    }
                 })
                 .catch(error => {
                     console.error('Error loading recipe:', error);
@@ -240,19 +255,19 @@
             const output = `
                 <div class="recipe-hero"></div>
                 <div class="recipe-detail-content">
-                    <h1 class="recipe-detail-title">${recipe.title}</h1>
+                    <h1 class="recipe-detail-title">${recipe.title || 'Recipe'}</h1>
                     
                     <div class="recipe-section">
                         <h3>Ingredients</h3>
                         <ul class="ingredients-list">
-                            ${recipe.ingredients}
+                            ${recipe.ingredients || '<li>No ingredients listed</li>'}
                         </ul>
                     </div>
                     
                     <div class="recipe-section">
                         <h3>Method</h3>
                         <ol class="method-list">
-                            ${recipe.method}
+                            ${recipe.method || '<li>No method provided</li>'}
                         </ol>
                     </div>
                 </div>
@@ -267,17 +282,23 @@
                 main: [
                     { id: 1, title: "Beef Wellington", description: "Classic beef tenderloin wrapped in puff pastry with mushroom duxelles" },
                     { id: 2, title: "Lobster Thermidor", description: "Succulent lobster in a rich, creamy sauce with a golden cheese crust" },
-                    { id: 3, title: "Duck Confit", description: "Slow-cooked duck leg in its own fat, served with garlic and herbs" }
+                    { id: 3, title: "Duck Confit", description: "Slow-cooked duck leg in its own fat, served with garlic and herbs" },
+                    { id: 10, title: "Coq au Vin", description: "Classic French chicken braised in red wine with pearl onions and mushrooms" },
+                    { id: 11, title: "Rack of Lamb", description: "Herb-crusted rack of lamb with roasted vegetables and red wine jus" }
                 ],
                 drink: [
                     { id: 4, title: "Classic Martini", description: "Premium gin or vodka, dry vermouth, garnished with olive or lemon twist" },
                     { id: 5, title: "Château Margaux 2010", description: "Exceptional Bordeaux wine with notes of blackcurrant and cedar" },
-                    { id: 6, title: "Champagne Cocktail", description: "Traditional champagne cocktail with sugar cube and Angostura bitters" }
+                    { id: 6, title: "Champagne Cocktail", description: "Traditional champagne cocktail with sugar cube and Angostura bitters" },
+                    { id: 12, title: "Old Fashioned", description: "Classic whiskey cocktail with sugar, bitters, and orange peel" },
+                    { id: 13, title: "French 75", description: "Gin, lemon juice, and champagne in a sophisticated cocktail" }
                 ],
                 dessert: [
                     { id: 7, title: "Crème Brûlée", description: "Rich vanilla custard topped with caramelized sugar" },
                     { id: 8, title: "Chocolate Soufflé", description: "Light and airy chocolate dessert, served warm with vanilla ice cream" },
-                    { id: 9, title: "Tarte Tatin", description: "Upside-down apple tart with caramelized apples and buttery pastry" }
+                    { id: 9, title: "Tarte Tatin", description: "Upside-down apple tart with caramelized apples and buttery pastry" },
+                    { id: 14, title: "Tiramisu", description: "Classic Italian dessert with coffee-soaked ladyfingers and mascarpone" },
+                    { id: 15, title: "Lemon Posset", description: "Silky smooth English dessert with cream, sugar, and fresh lemon" }
                 ]
             };
             return recipes[category] || [];
@@ -287,21 +308,75 @@
             const recipes = {
                 1: { 
                     title: "Beef Wellington", 
-                    ingredients: "<li>2 lbs beef tenderloin</li><li>1 lb puff pastry</li><li>8 oz mushrooms</li><li>2 shallots</li><li>Fresh thyme</li>",
-                    method: "<li>Sear the beef tenderloin</li><li>Prepare mushroom duxelles</li><li>Wrap beef in pastry</li><li>Bake until golden</li>"
+                    ingredients: "<li>2 lbs beef tenderloin, trimmed</li><li>1 lb puff pastry, thawed</li><li>8 oz mixed mushrooms, finely chopped</li><li>2 shallots, minced</li><li>Fresh thyme leaves</li><li>2 tbsp Dijon mustard</li><li>Salt and freshly ground black pepper</li>",
+                    method: "<li>Season the beef tenderloin with salt and pepper, then sear in a hot pan until browned on all sides</li><li>Brush the seared beef with Dijon mustard and let cool</li><li>Sauté mushrooms and shallots until moisture has evaporated to create duxelles</li><li>Roll out puff pastry and spread with mushroom mixture</li><li>Wrap the beef in the pastry and seal edges</li><li>Bake at 400°F (200°C) for 25-30 minutes until pastry is golden</li><li>Rest for 10 minutes before slicing and serving</li>"
                 },
                 2: { 
                     title: "Lobster Thermidor", 
-                    ingredients: "<li>2 lobsters</li><li>Heavy cream</li><li>Gruyère cheese</li><li>White wine</li><li>Mustard</li>",
-                    method: "<li>Cook lobsters</li><li>Remove meat from shells</li><li>Prepare cream sauce</li><li>Broil until golden</li>"
+                    ingredients: "<li>2 whole lobsters (1.5 lbs each)</li><li>1 cup heavy cream</li><li>1/2 cup Gruyère cheese, grated</li><li>1/4 cup white wine</li><li>2 tbsp Dijon mustard</li><li>2 tbsp butter</li><li>1 shallot, minced</li><li>Fresh tarragon</li><li>Salt and white pepper to taste</li>",
+                    method: "<li>Steam lobsters until cooked, then remove meat from shells and reserve shells</li><li>Cut lobster meat into bite-sized pieces</li><li>Sauté shallot in butter until softened</li><li>Add white wine and reduce by half</li><li>Stir in cream, mustard, and tarragon, simmer until thickened</li><li>Fold in lobster meat and season with salt and pepper</li><li>Fill reserved shells with mixture, top with cheese</li><li>Broil until golden and bubbly, about 3-4 minutes</li>"
+                },
+                3: { 
+                    title: "Duck Confit", 
+                    ingredients: "<li>4 duck legs</li><li>1/4 cup coarse salt</li><li>4 garlic cloves</li><li>4 sprigs fresh thyme</li><li>2 bay leaves</li><li>4 cups duck fat</li><li>Black peppercorns</li>",
+                    method: "<li>Season duck legs with salt, garlic, thyme, and bay leaves</li><li>Cure in refrigerator for 24 hours</li><li>Rinse and pat dry</li><li>Submerge in melted duck fat in oven-safe dish</li><li>Cook at 225°F (110°C) for 2-3 hours until tender</li><li>Store covered in fat until ready to serve</li><li>To serve, remove from fat and crisp skin in hot pan</li>"
+                },
+                4: { 
+                    title: "Classic Martini", 
+                    ingredients: "<li>2.5 oz premium gin or vodka</li><li>0.5 oz dry vermouth</li><li>Lemon twist or olives for garnish</li><li>Ice</li>",
+                    method: "<li>Chill martini glass in freezer</li><li>Add gin and vermouth to mixing glass with ice</li><li>Stir gently for 30 seconds</li><li>Strain into chilled glass</li><li>Garnish with lemon twist or olives</li><li>Serve immediately</li>"
+                },
+                7: { 
+                    title: "Crème Brûlée", 
+                    ingredients: "<li>2 cups heavy cream</li><li>1 vanilla bean, split and scraped</li><li>5 egg yolks</li><li>1/3 cup granulated sugar, plus extra for caramelizing</li><li>Pinch of salt</li>",
+                    method: "<li>Preheat oven to 325°F (160°C)</li><li>Heat cream with vanilla bean in saucepan until just simmering</li><li>Whisk egg yolks with sugar until pale</li><li>Gradually add hot cream to yolks, whisking constantly</li><li>Strain mixture and divide among ramekins</li><li>Bake in water bath for 35-40 minutes until set but still jiggly</li><li>Chill for at least 2 hours</li><li>Sprinkle with sugar and caramelize with torch before serving</li>"
+                },
+                8: { 
+                    title: "Chocolate Soufflé", 
+                    ingredients: "<li>6 oz dark chocolate (70%), chopped</li><li>6 large eggs, separated</li><li>1/3 cup granulated sugar, divided</li><li>3 tbsp unsalted butter</li><li>3 tbsp all-purpose flour</li><li>1 cup whole milk</li><li>1 tsp vanilla extract</li><li>Butter and sugar for ramekins</li>",
+                    method: "<li>Preheat oven to 375°F (190°C) and prepare ramekins</li><li>Melt chocolate in double boiler until smooth</li><li>Make pastry cream with butter, flour, and milk</li><li>Combine chocolate with pastry cream and egg yolks</li><li>Whip egg whites with sugar to soft peaks</li><li>Fold whites into chocolate mixture in three additions</li><li>Fill ramekins and bake for 12-15 minutes until risen</li><li>Serve immediately with vanilla ice cream</li>"
                 }
             };
-            return recipes[id] || { title: "Recipe Not Found", ingredients: "<li>No ingredients available</li>", method: "<li>No method available</li>" };
+            return recipes[id] || { 
+                title: "Recipe Not Found", 
+                ingredients: "<li>This recipe is not available at the moment</li>", 
+                method: "<li>Please try selecting a different recipe</li>" 
+            };
         }
 
         // Initialize the application
         window.addEventListener('load', () => {
             showPage('home');
+        });
+
+        // Handle browser back button
+        window.addEventListener('popstate', () => {
+            // Handle browser navigation if needed
+        });
+
+        // Add smooth scrolling for better UX
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('a[href^="#"]')) {
+                e.preventDefault();
+            }
+        });
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                mainNav.classList.remove('active');
+                navOverlay.classList.remove('active');
+            }
+        });
+
+        // Improve accessibility
+        document.querySelectorAll('.nav-item, .category-card, .recipe-card').forEach(element => {
+            element.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    element.click();
+                }
+            });
         });
     </script>
 </body>
