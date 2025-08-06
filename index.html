@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Navigation Menu -->
     <nav class="main-nav" id="mainNav">
         <div class="nav-header">
             <div class="nav-logo">Château Culinaire</div>
@@ -29,16 +30,20 @@
         </div>
     </nav>
 
+    <!-- Menu Toggle Button -->
     <button class="menu-toggle" id="menuToggle">
         <i class="fas fa-bars"></i>
     </button>
 
+    <!-- Navigation Overlay -->
     <div class="nav-overlay" id="navOverlay"></div>
 
+    <!-- Back Button -->
     <button class="back-button" id="backButton" style="display: none;">
         <i class="fas fa-arrow-left"></i>
     </button>
-    
+
+    <!-- Home Page -->
     <div class="page home-page active" id="homePage">
         <div class="home-logo">Château Culinaire</div>
         <div class="home-tagline">Exquisite Recipes for the Discerning Palate</div>
@@ -70,6 +75,7 @@
         </div>
     </div>
 
+    <!-- Recipe List Page -->
     <div class="page" id="recipeListPage">
         <div class="page-header">
             <h1 class="page-title" id="listPageTitle">Recipe Collection</h1>
@@ -77,13 +83,16 @@
         </div>
         <div class="recipe-list-container">
             <div class="recipe-list" id="recipeList">
+                <!-- Recipes will be loaded here -->
             </div>
         </div>
     </div>
 
+    <!-- Recipe Detail Page -->
     <div class="page" id="recipeDetailPage">
         <div class="recipe-detail-container">
             <div class="recipe-detail" id="recipeDetail">
+                <!-- Recipe details will be loaded here -->
             </div>
         </div>
     </div>
