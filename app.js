@@ -72,7 +72,16 @@ function loadList(cat) {
   grid.innerHTML = '<div class="loading"><div class="spinner"></div>Loading…</div>';
   fetch(API + 'get-recipes/?category=' + cat)
     .then(r => { if (!r.ok) throw 0; return r.json(); })
-    .then(data => renderList(data, cat))
+    .then(data => {
+      // Inject our curated images — API doesn't include them
+      if (data && data.length) {
+        data.forEach(r => {
+          const fb = FALLBACK_DETAIL[r.id];
+          if (fb && !r.img) r.img = fb.img;
+        });
+      }
+      renderList(data, cat);
+    })
     .catch(() => renderList(FALLBACK_LIST[cat] || [], cat));
 }
 
@@ -83,9 +92,14 @@ function loadDetail(id) {
     .then(r => { if (!r.ok) throw 0; return r.json(); })
     .then(data => {
       if (data && data.length) {
-        // Merge fallback img into API result if needed
         const recipe = data[0];
-        if (!recipe.img && FALLBACK_DETAIL[id]) recipe.img = FALLBACK_DETAIL[id].img;
+        const fallback = FALLBACK_DETAIL[id];
+        // Always use our curated image — the API doesn't provide images
+        if (fallback) {
+          recipe.img         = fallback.img;
+          if (!recipe.ingredients || recipe.ingredients.trim() === '') recipe.ingredients = fallback.ingredients;
+          if (!recipe.method      || recipe.method.trim()      === '') recipe.method      = fallback.method;
+        }
         renderDetail(recipe);
       } else throw 0;
     })
